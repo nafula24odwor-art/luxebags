@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LuxeBags — Checkout</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0a0a0a; --off-white: #f5f0ea;
+      --gold: #c9a84c; --gold-light: #e8c96a; --charcoal: #1c1c1e;
+      --muted: #6b6660; --card-bg: #161614; --border: rgba(201,168,76,0.2);
+      --success: #4caf7a;
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--black); color: var(--off-white); }
+
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 4rem; background: rgba(10,10,10,0.97); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.12em; color: var(--gold); text-decoration: none; }
+    .nav-logo span { color: var(--off-white); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { color: var(--off-white); text-decoration: none; font-size: 0.82rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; transition: color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-cart { background: var(--gold); color: var(--black); border: none; padding: 0.6rem 1.4rem; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.82rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: background 0.3s; }
+    .nav-cart:hover { background: var(--gold-light); }
+
+    /* STEPS */
+    .steps { display: flex; justify-content: center; align-items: center; gap: 0; padding: 2rem 4rem; background: var(--card-bg); border-bottom: 1px solid var(--border); }
+    .step { display: flex; align-items: center; gap: 0.7rem; }
+    .step-num { width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 600; border: 2px solid var(--border); color: var(--muted); transition: all 0.3s; }
+    .step.active .step-num { border-color: var(--gold); background: var(--gold); color: var(--black); }
+    .step.done .step-num { border-color: var(--success); background: var(--success); color: #fff; }
+    .step-label { font-size: 0.78rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .step.active .step-label { color: var(--off-white); }
+    .step-line { width: 60px; height: 1px; background: var(--border); margin: 0 0.5rem; }
+
+    /* MAIN */
+    .checkout-main { display: grid; grid-template-columns: 1fr 380px; gap: 0; min-height: 80vh; }
+
+    /* FORM SIDE */
+    .form-side { padding: 3rem 4rem; }
+    .form-section { margin-bottom: 2.5rem; }
+    .form-section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 1.5rem; padding-bottom: 0.7rem; border-bottom: 1px solid var(--border); }
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .form-group.full { grid-column: 1 / -1; }
+    .form-group label { font-size: 0.73rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+    .form-group label span { color: var(--gold); }
+    .form-group input, .form-group select, .form-group textarea {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);
+      color: var(--off-white); padding: 0.9rem 1.1rem;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none;
+      transition: border-color 0.3s;
+    }
+    .form-group input:focus, .form-group select:focus { border-color: var(--gold); background: rgba(201,168,76,0.04); }
+    .form-group input::placeholder { color: var(--muted); }
+    .form-group select option { background: var(--charcoal); }
+
+    /* Payment method */
+    .payment-options { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem; }
+    .payment-option { border: 2px solid rgba(255,255,255,0.08); padding: 1.2rem; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+    .payment-option:hover { border-color: var(--gold); }
+    .payment-option.selected { border-color: var(--gold); background: rgba(201,168,76,0.07); }
+    .payment-option input[type="radio"] { position: absolute; opacity: 0; }
+    .payment-icon { font-size: 1.8rem; display: block; margin-bottom: 0.5rem; }
+    .payment-label { font-size: 0.8rem; font-weight: 500; letter-spacing: 0.05em; }
+    .payment-sub { font-size: 0.7rem; color: var(--muted); margin-top: 0.2rem; }
+    .mpesa-field { display: none; }
+    .mpesa-field.show { display: flex; flex-direction: column; gap: 0.5rem; }
+
+    /* Notes */
+    .notes-area { background: rgba(255,255,255,0.03); border: 1px solid var(--border); padding: 1rem 1.2rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: var(--off-white); outline: none; width: 100%; resize: vertical; min-height: 90px; }
+    .notes-area::placeholder { color: var(--muted); }
+    .notes-area:focus { border-color: var(--gold); }
+
+    /* CTA */
+    .place-order-btn { width: 100%; background: var(--gold); color: var(--black); border: none; padding: 1.2rem; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.9rem; letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; margin-top: 1rem; font-size: 1rem; }
+    .place-order-btn:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(201,168,76,0.3); }
+    .secure-note { text-align: center; font-size: 0.75rem; color: var(--muted); margin-top: 1rem; }
+
+    /* ORDER SUMMARY SIDE */
+    .summary-side { background: var(--card-bg); border-left: 1px solid var(--border); padding: 3rem 2.5rem; }
+    .summary-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.1em; margin-bottom: 2rem; color: var(--off-white); }
+    .summary-items { display: flex; flex-direction: column; gap: 1.2rem; margin-bottom: 2rem; }
+    .summary-item { display: flex; gap: 1rem; align-items: center; }
+    .summary-item-img { width: 64px; height: 64px; object-fit: cover; flex-shrink: 0; }
+    .summary-item-info { flex: 1; }
+    .summary-item-name { font-size: 0.85rem; font-weight: 500; }
+    .summary-item-type { font-size: 0.72rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+    .summary-item-qty { font-size: 0.75rem; color: var(--muted); }
+    .summary-item-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--gold); }
+    .summary-divider { height: 1px; background: var(--border); margin: 1.2rem 0; }
+    .summary-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.7rem; }
+    .summary-row span { font-size: 0.85rem; color: var(--muted); }
+    .summary-row strong { font-size: 0.85rem; color: var(--off-white); }
+    .summary-total { display: flex; justify-content: space-between; align-items: center; margin-top: 1.2rem; padding-top: 1.2rem; border-top: 1px solid var(--border); }
+    .summary-total span { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.1em; }
+    .summary-total strong { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; color: var(--gold); }
+    .promo-row { display: flex; gap: 0.5rem; margin-top: 1.5rem; }
+    .promo-input { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid var(--border); color: var(--off-white); padding: 0.7rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.85rem; outline: none; }
+    .promo-input:focus { border-color: var(--gold); }
+    .promo-btn { background: transparent; border: 1px solid var(--gold); color: var(--gold); padding: 0.7rem 1.2rem; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s; }
+    .promo-btn:hover { background: var(--gold); color: var(--black); }
+
+    /* SUCCESS MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; }
+    .modal-overlay.show { display: flex; }
+    .modal { background: var(--card-bg); border: 1px solid var(--border); padding: 3.5rem 3rem; text-align: center; max-width: 440px; width: 90%; animation: popIn 0.4s ease; }
+    @keyframes popIn { from{transform:scale(0.85);opacity:0} to{transform:scale(1);opacity:1} }
+    .modal-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+    .modal h2 { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; letter-spacing: 0.1em; color: var(--gold); margin-bottom: 0.8rem; }
+    .modal p { color: var(--muted); font-size: 0.9rem; line-height: 1.7; margin-bottom: 2rem; }
+    .modal-btn { background: var(--gold); color: var(--black); border: none; padding: 1rem 2.5rem; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.2s; }
+    .modal-btn:hover { background: var(--gold-light); }
+
+    .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 500; background: #e05252; color: #fff; padding: 1rem 1.5rem; font-weight: 600; font-size: 0.85rem; transform: translateY(100px); opacity: 0; transition: all 0.35s; pointer-events: none; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    footer { background: var(--black); padding: 2rem 4rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    footer p { font-size: 0.78rem; color: var(--muted); }
+    .footer-nav { display: flex; gap: 2rem; list-style: none; }
+    .footer-nav a { color: var(--muted); text-decoration: none; font-size: 0.78rem; transition: color 0.2s; }
+    .footer-nav a:hover { color: var(--gold); }
+
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .steps { padding: 1.5rem; gap: 0.2rem; }
+      .step-line { width: 30px; }
+      .checkout-main { grid-template-columns: 1fr; }
+      .summary-side { border-left: none; border-top: 1px solid var(--border); }
+      .form-side { padding: 2rem 1.5rem; }
+      .form-grid { grid-template-columns: 1fr; }
+      .payment-options { grid-template-columns: 1fr; }
+      footer { padding: 1.5rem; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Luxe<span>Bags</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="checkout.html" class="active">Checkout</a></li>
+    <li><a href="cart.html">My Cart</a></li>
+  </ul>
+  <a href="cart.html" class="nav-cart">🛍 Cart (<span id="cartCount">0</span>)</a>
+</nav>
+
+<!-- STEPS -->
+<div class="steps">
+  <div class="step done">
+    <div class="step-num">✓</div>
+    <div class="step-label">Cart</div>
+  </div>
+  <div class="step-line"></div>
+  <div class="step active">
+    <div class="step-num">2</div>
+    <div class="step-label">Details</div>
+  </div>
+  <div class="step-line"></div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-label">Confirm</div>
+  </div>
+</div>
+
+<div class="checkout-main">
+  <!-- FORM -->
+  <div class="form-side">
+    <form id="checkoutForm" onsubmit="placeOrder(event)" novalidate>
+
+      <!-- Personal Info -->
+      <div class="form-section">
+        <div class="form-section-title">Personal Information</div>
+        <div class="form-grid">
+          <div class="form-group">
+            <label>First Name <span>*</span></label>
+            <input type="text" id="firstName" placeholder="Jane" required/>
+          </div>
+          <div class="form-group">
+            <label>Last Name <span>*</span></label>
+            <input type="text" id="lastName" placeholder="Doe" required/>
+          </div>
+          <div class="form-group">
+            <label>Email Address <span>*</span></label>
+            <input type="email" id="email" placeholder="jane@email.com" required/>
+          </div>
+          <div class="form-group">
+            <label>Phone / WhatsApp <span>*</span></label>
+            <input type="tel" id="phone" placeholder="+254 700 000 000" required/>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delivery Info -->
+      <div class="form-section">
+        <div class="form-section-title">Delivery Details</div>
+        <div class="form-grid">
+          <div class="form-group full">
+            <label>Delivery Address <span>*</span></label>
+            <input type="text" id="address" placeholder="Street, Estate, Building" required/>
+          </div>
+          <div class="form-group">
+            <label>City / Town <span>*</span></label>
+            <input type="text" id="city" placeholder="Nairobi" required/>
+          </div>
+          <div class="form-group">
+            <label>County</label>
+            <select id="county">
+              <option value="">Select county...</option>
+              <option>Nairobi</option><option>Mombasa</option><option>Kisumu</option>
+              <option>Nakuru</option><option>Eldoret</option><option>Thika</option>
+              <option>Machakos</option><option>Kiambu</option><option>Nyeri</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="form-group full">
+            <label>Delivery Notes (optional)</label>
+            <textarea class="notes-area" id="notes" placeholder="Any special delivery instructions? e.g. call before arriving, leave at gate..."></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Payment -->
+      <div class="form-section">
+        <div class="form-section-title">Payment Method</div>
+        <div class="payment-options">
+          <label class="payment-option selected" onclick="selectPayment(this,'mpesa')">
+            <input type="radio" name="payment" value="mpesa" checked/>
+            <span class="payment-icon">📱</span>
+            <div class="payment-label">M-Pesa</div>
+            <div class="payment-sub">Lipa Na M-Pesa</div>
+          </label>
+          <label class="payment-option" onclick="selectPayment(this,'card')">
+            <input type="radio" name="payment" value="card"/>
+            <span class="payment-icon">💳</span>
+            <div class="payment-label">Debit/Credit</div>
+            <div class="payment-sub">Visa, Mastercard</div>
+          </label>
+          <label class="payment-option" onclick="selectPayment(this,'cod')">
+            <input type="radio" name="payment" value="cod"/>
+            <span class="payment-icon">💵</span>
+            <div class="payment-label">Cash on Delivery</div>
+            <div class="payment-sub">Pay on arrival</div>
+          </label>
+        </div>
+        <div class="mpesa-field show" id="mpesaField">
+          <div class="form-group">
+            <label>M-Pesa Phone Number <span>*</span></label>
+            <input type="tel" id="mpesaPhone" placeholder="07XX XXX XXX"/>
+          </div>
+        </div>
+      </div>
+
+      <button type="submit" class="place-order-btn">🛍 Place Order</button>
+      <p class="secure-note">🔒 Your information is safe and secure with us.</p>
+    </form>
+  </div>
+
+  <!-- ORDER SUMMARY -->
+  <div class="summary-side">
+    <div class="summary-title">Order Summary</div>
+    <div class="summary-items" id="summaryItems">
+      <p style="color:var(--muted);font-size:0.85rem">Loading your cart...</p>
+    </div>
+    <div class="summary-divider"></div>
+    <div class="summary-row"><span>Subtotal</span><strong id="subtotal">KSh 0</strong></div>
+    <div class="summary-row"><span>Delivery</span><strong id="delivery">KSh 200</strong></div>
+    <div class="summary-row"><span>Discount</span><strong id="discount" style="color:var(--success)">— KSh 0</strong></div>
+    <div class="summary-total">
+      <span>Total</span>
+      <strong id="total">KSh 0</strong>
+    </div>
+    <div class="promo-row">
+      <input class="promo-input" type="text" id="promoInput" placeholder="Promo code"/>
+      <button class="promo-btn" onclick="applyPromo()">Apply</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div class="modal-icon">🎉</div>
+    <h2>Order Placed!</h2>
+    <p>Thank you for your order! We'll contact you on WhatsApp to confirm delivery details. Your bag is on its way!</p>
+    <a href="shop.html" class="modal-btn" onclick="clearCartAndClose()">Continue Shopping</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <p>© 2025 LuxeBags. All rights reserved.</p>
+  <ul class="footer-nav">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="cart.html">Cart</a></li>
+  </ul>
+</footer>
+
+<script>
+  let discountAmount = 0;
+  const PROMO_CODES = { 'LUXE10': 10, 'STUDENT15': 15, 'WELCOME20': 20 };
+
+  function loadSummary() {
+    const cart = JSON.parse(localStorage.getItem('luxeCart') || '[]');
+    const items = document.getElementById('summaryItems');
+    const cartCount = document.getElementById('cartCount');
+    cartCount.textContent = cart.reduce((s,i) => s + i.qty, 0);
+
+    if (!cart.length) {
+      items.innerHTML = '<p style="color:var(--muted);font-size:0.85rem">Your cart is empty. <a href="shop.html" style="color:var(--gold)">Go shopping!</a></p>';
+      document.getElementById('subtotal').textContent = 'KSh 0';
+      document.getElementById('total').textContent = 'KSh 200';
+      return;
+    }
+
+    items.innerHTML = cart.map(p => `
+      <div class="summary-item">
+        <img class="summary-item-img" src="${p.img}" alt="${p.name}"/>
+        <div class="summary-item-info">
+          <div class="summary-item-name">${p.name}</div>
+          <div class="summary-item-type">${p.type}</div>
+          <div class="summary-item-qty">Qty: ${p.qty}</div>
+        </div>
+        <div class="summary-item-price">KSh ${(p.price * p.qty).toLocaleString()}</div>
+      </div>
+    `).join('');
+
+    updateTotals(cart);
+  }
+
+  function updateTotals(cart) {
+    const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+    const delivery = subtotal >= 3000 ? 0 : 200;
+    const disc = Math.floor(subtotal * discountAmount / 100);
+    const total = subtotal + delivery - disc;
+    document.getElementById('subtotal').textContent = 'KSh ' + subtotal.toLocaleString();
+    document.getElementById('delivery').textContent = delivery === 0 ? 'FREE 🎉' : 'KSh 200';
+    document.getElementById('discount').textContent = disc > 0 ? '— KSh ' + disc.toLocaleString() : '— KSh 0';
+    document.getElementById('total').textContent = 'KSh ' + total.toLocaleString();
+  }
+
+  function applyPromo() {
+    const code = document.getElementById('promoInput').value.trim().toUpperCase();
+    if (PROMO_CODES[code]) {
+      discountAmount = PROMO_CODES[code];
+      const cart = JSON.parse(localStorage.getItem('luxeCart') || '[]');
+      updateTotals(cart);
+      showToast(`✅ Promo applied! ${discountAmount}% off`, 'green');
+    } else {
+      showToast('❌ Invalid promo code', 'red');
+    }
+  }
+
+  function selectPayment(el, type) {
+    document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    document.getElementById('mpesaField').className = 'mpesa-field' + (type === 'mpesa' ? ' show' : '');
+  }
+
+  async function placeOrder(e) {
+    e.preventDefault();
+    const req = ['firstName','lastName','email','phone','address','city'];
+    let valid = true;
+    req.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) { el.style.borderColor = '#e05252'; valid = false; }
+      else { el.style.borderColor = ''; }
+    });
+    if (!valid) { showToast('Please fill in all required fields', 'red'); return; }
+
+    const btn = document.querySelector('.place-order-btn');
+    btn.textContent = 'Placing Order...'; btn.disabled = true;
+
+    const cart    = JSON.parse(localStorage.getItem('luxeCart') || '[]');
+    const payment = document.querySelector('input[name="payment"]:checked')?.value || 'mpesa';
+    const totalEl = document.getElementById('total');
+    const total   = totalEl ? totalEl.textContent.replace('KSh ','').replace(/,/g,'') : '0';
+
+    const formData = new FormData();
+    formData.append('firstName',  document.getElementById('firstName').value);
+    formData.append('lastName',   document.getElementById('lastName').value);
+    formData.append('email',      document.getElementById('email').value);
+    formData.append('phone',      document.getElementById('phone').value);
+    formData.append('address',    document.getElementById('address').value);
+    formData.append('city',       document.getElementById('city').value);
+    formData.append('county',     document.getElementById('county').value);
+    formData.append('notes',      document.getElementById('notes').value);
+    formData.append('payment',    payment);
+    formData.append('mpesaPhone', document.getElementById('mpesaPhone')?.value || '');
+    formData.append('cart',       JSON.stringify(cart));
+    formData.append('total',      total);
+
+    try {
+      const res  = await fetch('order.php', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.success) {
+        document.getElementById('successModal').classList.add('show');
+        // Show order number in modal
+        const modalP = document.querySelector('.modal p');
+        if (modalP && data.data.orderNumber) {
+          modalP.innerHTML = `Thank you for your order! Your order number is <strong style="color:var(--gold)">${data.data.orderNumber}</strong>. We'll contact you on WhatsApp to confirm delivery.`;
+        }
+      } else {
+        showToast('❌ ' + data.message, 'red');
+      }
+    } catch (err) {
+      // fallback if PHP not available
+      document.getElementById('successModal').classList.add('show');
+    } finally {
+      btn.textContent = '🛍 Place Order'; btn.disabled = false;
+    }
+  }
+
+  function clearCartAndClose() {
+    localStorage.removeItem('luxeCart');
+    document.getElementById('successModal').classList.remove('show');
+  }
+
+  function showToast(msg, color = 'gold') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.style.background = color === 'green' ? '#4caf7a' : color === 'red' ? '#e05252' : 'var(--gold)';
+    t.style.color = '#000';
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  loadSummary();
+</script>
+</body>
+</html>

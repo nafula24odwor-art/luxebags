@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LuxeBags — Shop</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital@1&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0a0a0a; --off-white: #f5f0ea;
+      --gold: #c9a84c; --gold-light: #e8c96a; --charcoal: #1c1c1e;
+      --muted: #6b6660; --card-bg: #161614; --border: rgba(201,168,76,0.2);
+    }
+    body { font-family: 'DM Sans', sans-serif; background: var(--black); color: var(--off-white); }
+
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 4rem; background: rgba(10,10,10,0.97); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.12em; color: var(--gold); text-decoration: none; }
+    .nav-logo span { color: var(--off-white); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { color: var(--off-white); text-decoration: none; font-size: 0.82rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; transition: color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-cart { background: var(--gold); color: var(--black); border: none; padding: 0.6rem 1.4rem; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.82rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: background 0.3s; }
+    .nav-cart:hover { background: var(--gold-light); }
+
+    /* PAGE HERO */
+    .page-hero { background: linear-gradient(135deg, #1a1608, #0a0a0a); padding: 5rem 4rem 4rem; border-bottom: 1px solid var(--border); }
+    .page-hero .section-label { font-size: 0.72rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.8rem; }
+    .page-hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 6vw, 6rem); letter-spacing: 0.06em; }
+    .page-hero p { color: var(--muted); font-size: 0.95rem; margin-top: 0.8rem; font-weight: 300; }
+
+    /* SHOP LAYOUT */
+    .shop-layout { display: grid; grid-template-columns: 240px 1fr; gap: 0; min-height: 80vh; }
+
+    /* SIDEBAR */
+    .sidebar { padding: 2.5rem 2rem; border-right: 1px solid var(--border); background: var(--card-bg); }
+    .sidebar-section { margin-bottom: 2.5rem; }
+    .sidebar-title { font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.2rem; font-weight: 500; }
+    .filter-list { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+    .filter-list li { display: flex; align-items: center; gap: 0.6rem; }
+    .filter-list input[type="checkbox"] { accent-color: var(--gold); width: 14px; height: 14px; cursor: pointer; }
+    .filter-list label { font-size: 0.85rem; color: var(--muted); cursor: pointer; transition: color 0.2s; }
+    .filter-list label:hover { color: var(--off-white); }
+    .price-range { width: 100%; accent-color: var(--gold); margin-top: 0.5rem; }
+    .price-display { font-size: 0.82rem; color: var(--muted); margin-top: 0.5rem; }
+    .clear-btn { width: 100%; background: transparent; border: 1px solid var(--border); color: var(--muted); padding: 0.6rem; font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; margin-top: 1rem; }
+    .clear-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* PRODUCTS AREA */
+    .products-area { padding: 2.5rem 3rem; }
+    .products-toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+    .results-count { font-size: 0.82rem; color: var(--muted); }
+    .sort-select { background: var(--card-bg); border: 1px solid var(--border); color: var(--off-white); padding: 0.5rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; cursor: pointer; outline: none; }
+    .filter-chips { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .chip { background: rgba(201,168,76,0.15); border: 1px solid var(--gold); color: var(--gold); padding: 0.3rem 0.9rem; font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.2s; }
+    .chip:hover { background: var(--gold); color: var(--black); }
+    .chip.active { background: var(--gold); color: var(--black); }
+
+    .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 1.5rem; }
+    .product-card { background: var(--card-bg); border: 1px solid rgba(255,255,255,0.05); overflow: hidden; transition: transform 0.3s, box-shadow 0.3s; animation: fadeUp 0.5s ease both; }
+    .product-card:hover { transform: translateY(-6px); box-shadow: 0 20px 48px rgba(0,0,0,0.5); }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+    .product-img-wrap { overflow: hidden; position: relative; }
+    .product-img { width: 100%; aspect-ratio: 4/5; object-fit: cover; display: block; transition: transform 0.5s; }
+    .product-card:hover .product-img { transform: scale(1.05); }
+    .badge { position: absolute; top: 0.8rem; left: 0.8rem; background: var(--gold); color: var(--black); font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 0.3rem 0.7rem; }
+    .badge.sale { background: #e05252; color: #fff; left: auto; right: 0.8rem; }
+    .product-actions { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(10,10,10,0.9); backdrop-filter: blur(4px); padding: 0.9rem; transform: translateY(100%); transition: transform 0.3s; }
+    .product-card:hover .product-actions { transform: translateY(0); }
+    .add-btn { width: 100%; background: var(--gold); color: var(--black); border: none; padding: 0.7rem; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; transition: background 0.2s; }
+    .add-btn:hover { background: var(--gold-light); }
+    .product-info { padding: 1.1rem 1.1rem 1.3rem; }
+    .product-type { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.3rem; }
+    .product-name { font-size: 0.95rem; font-weight: 500; color: var(--off-white); margin-bottom: 0.6rem; }
+    .product-price { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.08em; color: var(--gold); }
+    .old-price { font-family: 'DM Sans', sans-serif; font-size: 0.8rem; color: var(--muted); text-decoration: line-through; margin-left: 0.5rem; letter-spacing: 0; font-weight: 300; }
+
+    /* Empty state */
+    .empty-state { text-align: center; padding: 5rem 2rem; grid-column: 1/-1; }
+    .empty-state p { color: var(--muted); font-size: 0.95rem; }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 500; background: var(--gold); color: var(--black); padding: 1rem 1.5rem; font-weight: 600; font-size: 0.85rem; transform: translateY(100px); opacity: 0; transition: all 0.35s; pointer-events: none; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    footer { background: var(--black); padding: 2rem 4rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    footer p { font-size: 0.78rem; color: var(--muted); }
+    .footer-nav { display: flex; gap: 2rem; list-style: none; }
+    .footer-nav a { color: var(--muted); text-decoration: none; font-size: 0.78rem; transition: color 0.2s; }
+    .footer-nav a:hover { color: var(--gold); }
+
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .page-hero { padding: 3rem 1.5rem; }
+      .shop-layout { grid-template-columns: 1fr; }
+      .sidebar { border-right: none; border-bottom: 1px solid var(--border); }
+      .products-area { padding: 2rem 1.5rem; }
+      footer { padding: 1.5rem; flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Luxe<span>Bags</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shop.html" class="active">Shop</a></li>
+    <li><a href="checkout.html">Checkout</a></li>
+    <li><a href="cart.html">My Cart</a></li>
+  </ul>
+  <a href="cart.html" class="nav-cart">🛍 Cart (<span id="cartCount">0</span>)</a>
+</nav>
+
+<div class="page-hero">
+  <div class="section-label">Browse Our Collection</div>
+  <h1>SHOP ALL BAGS</h1>
+  <p>Discover styles made for every occasion — work, weekend, and everything in between.</p>
+</div>
+
+<div class="shop-layout">
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-section">
+      <div class="sidebar-title">Category</div>
+      <ul class="filter-list">
+        <li><input type="checkbox" id="f-all" checked onchange="applyFilters()"/><label for="f-all">All Bags</label></li>
+        <li><input type="checkbox" id="f-tote" onchange="applyFilters()"/><label for="f-tote">Totes</label></li>
+        <li><input type="checkbox" id="f-clutch" onchange="applyFilters()"/><label for="f-clutch">Clutches</label></li>
+        <li><input type="checkbox" id="f-crossbody" onchange="applyFilters()"/><label for="f-crossbody">Crossbody</label></li>
+        <li><input type="checkbox" id="f-shoulder" onchange="applyFilters()"/><label for="f-shoulder">Shoulder Bags</label></li>
+      </ul>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Max Price (KSh)</div>
+      <input type="range" class="price-range" min="1000" max="6000" value="6000" step="100" id="priceRange" oninput="updatePrice(this.value)"/>
+      <div class="price-display">Up to KSh <span id="priceVal">6,000</span></div>
+    </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Availability</div>
+      <ul class="filter-list">
+        <li><input type="checkbox" id="f-new" onchange="applyFilters()"/><label for="f-new">New Arrivals</label></li>
+        <li><input type="checkbox" id="f-sale" onchange="applyFilters()"/><label for="f-sale">On Sale</label></li>
+      </ul>
+    </div>
+    <button class="clear-btn" onclick="clearFilters()">Clear Filters</button>
+  </aside>
+
+  <!-- PRODUCTS -->
+  <div class="products-area">
+    <div class="products-toolbar">
+      <div class="results-count"><span id="resultCount">8</span> products found</div>
+      <div style="display:flex;gap:1rem;align-items:center;flex-wrap:wrap">
+        <div class="filter-chips">
+          <span class="chip active" onclick="chipFilter(this,'all')">All</span>
+          <span class="chip" onclick="chipFilter(this,'tote')">Totes</span>
+          <span class="chip" onclick="chipFilter(this,'clutch')">Clutches</span>
+          <span class="chip" onclick="chipFilter(this,'crossbody')">Crossbody</span>
+        </div>
+        <select class="sort-select" onchange="sortProducts(this.value)">
+          <option value="default">Sort: Featured</option>
+          <option value="low">Price: Low to High</option>
+          <option value="high">Price: High to Low</option>
+          <option value="new">Newest First</option>
+        </select>
+      </div>
+    </div>
+    <div class="products-grid" id="productsGrid"></div>
+  </div>
+</div>
+
+<footer>
+  <p>© 2025 LuxeBags. All rights reserved.</p>
+  <ul class="footer-nav">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="checkout.html">Checkout</a></li>
+    <li><a href="cart.html">Cart</a></li>
+  </ul>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── REPLACE THESE image URLs with your own bag photos ──
+  // Just change the `img` value to your image filename e.g. "img": "mybag1.jpg"
+  const allProducts = [
+    { id:1, name:"Velvet Touch Tote", type:"tote", price:2800, oldPrice:3500, img:"https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=600&q=80", isNew:true, onSale:true },
+    { id:2, name:"Downtown Clutch", type:"clutch", price:1800, oldPrice:null, img:"https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?w=600&q=80", isNew:false, onSale:false },
+    { id:3, name:"Golden Hour Crossbody", type:"crossbody", price:3200, oldPrice:4000, img:"https://images.unsplash.com/photo-1598532163257-ae3c6b2524b6?w=600&q=80", isNew:true, onSale:true },
+    { id:4, name:"Night Out Mini", type:"clutch", price:1500, oldPrice:null, img:"https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=600&q=80", isNew:false, onSale:false },
+    { id:5, name:"City Stride Tote", type:"tote", price:3500, oldPrice:4200, img:"https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&q=80", isNew:false, onSale:true },
+    { id:6, name:"Boho Weave Shoulder", type:"crossbody", price:2400, oldPrice:null, img:"https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=600&q=80", isNew:true, onSale:false },
+    { id:7, name:"Classic Chain Bag", type:"clutch", price:2100, oldPrice:2600, img:"https://images.unsplash.com/photo-1576431729742-8c688536cce3?w=600&q=80", isNew:false, onSale:true },
+    { id:8, name:"Weekend Wanderer Tote", type:"tote", price:4000, oldPrice:null, img:"https://images.unsplash.com/photo-1547949003-9792a18a2601?w=600&q=80", isNew:true, onSale:false },
+  ];
+
+  let currentFilter = 'all';
+  let maxPrice = 6000;
+  let sortMode = 'default';
+
+  function renderProducts(list) {
+    const grid = document.getElementById('productsGrid');
+    document.getElementById('resultCount').textContent = list.length;
+    if (!list.length) {
+      grid.innerHTML = '<div class="empty-state"><p>No bags match your filters. Try adjusting them!</p></div>';
+      return;
+    }
+    grid.innerHTML = list.map((p,i) => `
+      <div class="product-card" style="animation-delay:${i*0.07}s">
+        <div class="product-img-wrap">
+          <img class="product-img" src="${p.img}" alt="${p.name}" loading="lazy"/>
+          ${p.isNew ? '<span class="badge">New</span>' : ''}
+          ${p.onSale ? '<span class="badge sale">Sale</span>' : ''}
+          <div class="product-actions">
+            <button class="add-btn" onclick="addToCart(${p.id})">+ Add to Cart</button>
+          </div>
+        </div>
+        <div class="product-info">
+          <div class="product-type">${p.type}</div>
+          <div class="product-name">${p.name}</div>
+          <div class="product-price">KSh ${p.price.toLocaleString()}${p.oldPrice ? `<span class="old-price">KSh ${p.oldPrice.toLocaleString()}</span>` : ''}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function getFiltered() {
+    let list = [...allProducts];
+    if (currentFilter !== 'all') list = list.filter(p => p.type === currentFilter);
+    list = list.filter(p => p.price <= maxPrice);
+    if (document.getElementById('f-new').checked) list = list.filter(p => p.isNew);
+    if (document.getElementById('f-sale').checked) list = list.filter(p => p.onSale);
+    if (sortMode === 'low') list.sort((a,b) => a.price - b.price);
+    if (sortMode === 'high') list.sort((a,b) => b.price - a.price);
+    if (sortMode === 'new') list.sort((a,b) => b.isNew - a.isNew);
+    return list;
+  }
+
+  function applyFilters() { renderProducts(getFiltered()); }
+  function sortProducts(v) { sortMode = v; applyFilters(); }
+  function updatePrice(v) { maxPrice = parseInt(v); document.getElementById('priceVal').textContent = parseInt(v).toLocaleString(); applyFilters(); }
+  function clearFilters() {
+    currentFilter = 'all';
+    maxPrice = 6000;
+    sortMode = 'default';
+    document.getElementById('priceRange').value = 6000;
+    document.getElementById('priceVal').textContent = '6,000';
+    document.querySelectorAll('.filter-list input').forEach(i => i.checked = false);
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    document.querySelector('.chip').classList.add('active');
+    renderProducts(allProducts);
+  }
+  function chipFilter(el, filter) {
+    document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    currentFilter = filter;
+    applyFilters();
+  }
+
+  function addToCart(id) {
+    const product = allProducts.find(p => p.id === id);
+    let cart = JSON.parse(localStorage.getItem('luxeCart') || '[]');
+    const existing = cart.find(i => i.id === id);
+    if (existing) { existing.qty++; }
+    else { cart.push({ ...product, qty: 1 }); }
+    localStorage.setItem('luxeCart', JSON.stringify(cart));
+    const total = cart.reduce((s,i) => s + i.qty, 0);
+    document.getElementById('cartCount').textContent = total;
+    showToast(`✅ ${product.name} added to cart!`);
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Init
+  const cart = JSON.parse(localStorage.getItem('luxeCart') || '[]');
+  document.getElementById('cartCount').textContent = cart.reduce((s,i) => s + i.qty, 0);
+  renderProducts(allProducts);
+</script>
+</body>
+</html>

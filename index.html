@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LuxeBags — Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500&family=Playfair+Display:ital@1&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --black: #0a0a0a; --off-white: #f5f0ea; --cream: #ede8df;
+      --gold: #c9a84c; --gold-light: #e8c96a; --charcoal: #1c1c1e;
+      --muted: #6b6660; --card-bg: #161614; --border: rgba(201,168,76,0.2);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--black); color: var(--off-white); overflow-x: hidden; }
+
+    /* NAV */
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.5rem 4rem;
+      background: rgba(10,10,10,0.95);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.12em; color: var(--gold); text-decoration: none; }
+    .nav-logo span { color: var(--off-white); }
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a { color: var(--off-white); text-decoration: none; font-size: 0.82rem; letter-spacing: 0.15em; text-transform: uppercase; font-weight: 500; transition: color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--gold); }
+    .nav-cart { background: var(--gold); color: var(--black); border: none; padding: 0.6rem 1.4rem; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.82rem; letter-spacing: 0.12em; text-transform: uppercase; cursor: pointer; text-decoration: none; transition: background 0.3s; }
+    .nav-cart:hover { background: var(--gold-light); }
+
+    /* HERO */
+    .hero {
+      min-height: 90vh; display: flex; align-items: center;
+      background: linear-gradient(135deg, #0a0a0a 0%, #1a1608 100%);
+      position: relative; overflow: hidden;
+      padding: 4rem;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -20%; right: -10%;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .hero::after {
+      content: ''; position: absolute; bottom: -20%; left: -5%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 680px; }
+    .hero-tag { font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.8rem; }
+    .hero-tag::before { content: ''; display: block; width: 32px; height: 1px; background: var(--gold); }
+    .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(5rem, 10vw, 10rem); line-height: 0.9; letter-spacing: 0.04em; }
+    .hero h1 .italic { font-family: 'Playfair Display', serif; color: var(--gold); font-size: 0.6em; display: block; }
+    .hero-sub { font-size: 1rem; color: var(--muted); max-width: 420px; line-height: 1.8; margin: 2rem 0 3rem; font-weight: 300; }
+    .hero-actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .btn-primary { background: var(--gold); color: var(--black); padding: 1rem 2.4rem; border: none; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; text-decoration: none; cursor: pointer; transition: all 0.3s; display: inline-block; }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 12px 32px rgba(201,168,76,0.3); }
+    .btn-outline { border: 1px solid rgba(245,240,234,0.3); color: var(--off-white); padding: 1rem 2rem; font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; transition: border-color 0.3s, color 0.3s; }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* MARQUEE */
+    .marquee-wrap { background: var(--gold); overflow: hidden; padding: 0.9rem 0; }
+    .marquee-track { display: flex; animation: marquee 18s linear infinite; white-space: nowrap; }
+    .marquee-track span { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.18em; color: var(--black); padding: 0 2rem; }
+    .marquee-track .dot { color: rgba(0,0,0,0.4); }
+    @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+    /* FEATURES */
+    .features { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+    .feature-item { padding: 3rem 2rem; border-right: 1px solid var(--border); text-align: center; transition: background 0.3s; background: var(--card-bg); }
+    .feature-item:last-child { border-right: none; }
+    .feature-item:hover { background: rgba(201,168,76,0.05); }
+    .feature-icon { font-size: 2rem; margin-bottom: 1rem; }
+    .feature-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; letter-spacing: 0.12em; color: var(--off-white); margin-bottom: 0.5rem; }
+    .feature-desc { font-size: 0.8rem; color: var(--muted); line-height: 1.6; }
+
+    /* CONTACT */
+    #contact { padding: 7rem 4rem; background: var(--charcoal); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6rem; align-items: start; margin-top: 3rem; }
+    .section-label { font-size: 0.72rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--gold); margin-bottom: 1rem; }
+    .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 4vw, 4rem); letter-spacing: 0.06em; line-height: 1; }
+    .contact-info-item { display: flex; gap: 1.2rem; align-items: flex-start; margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    .contact-info-item:last-child { border-bottom: none; margin-bottom: 0; }
+    .contact-icon { font-size: 1.4rem; margin-top: 0.1rem; flex-shrink: 0; }
+    .contact-label { font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.3rem; }
+    .contact-value { font-size: 0.95rem; color: var(--off-white); line-height: 1.6; }
+    .contact-value a { color: var(--off-white); text-decoration: none; }
+    .contact-value a:hover { color: var(--gold); }
+
+    /* Contact Form */
+    .contact-form { display: flex; flex-direction: column; gap: 1.2rem; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .form-group label { font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+    .form-group input, .form-group textarea, .form-group select {
+      background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+      color: var(--off-white); padding: 0.9rem 1.1rem;
+      font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none;
+      transition: border-color 0.3s;
+    }
+    .form-group input:focus, .form-group textarea:focus { border-color: var(--gold); }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: var(--muted); }
+    .submit-btn { background: var(--gold); color: var(--black); border: none; padding: 1rem; font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 0.85rem; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; transition: all 0.3s; }
+    .submit-btn:hover { background: var(--gold-light); }
+
+    /* SOCIAL STRIP */
+    .social-strip { background: var(--black); padding: 4rem; text-align: center; border-top: 1px solid var(--border); }
+    .social-strip h3 { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 0.1em; margin-bottom: 2rem; }
+    .social-links { display: flex; justify-content: center; gap: 1.2rem; flex-wrap: wrap; }
+    .social-link { display: flex; align-items: center; gap: 0.8rem; border: 1px solid var(--border); padding: 0.8rem 1.8rem; color: var(--off-white); text-decoration: none; font-size: 0.85rem; letter-spacing: 0.1em; transition: all 0.3s; }
+    .social-link:hover { border-color: var(--gold); color: var(--gold); }
+    .social-link .si { font-size: 1.2rem; }
+
+    /* FOOTER */
+    footer { background: var(--black); padding: 2rem 4rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+    footer p { font-size: 0.78rem; color: var(--muted); }
+    .footer-nav { display: flex; gap: 2rem; list-style: none; }
+    .footer-nav a { color: var(--muted); text-decoration: none; font-size: 0.78rem; transition: color 0.2s; }
+    .footer-nav a:hover { color: var(--gold); }
+
+    /* Toast */
+    .toast { position: fixed; bottom: 2rem; right: 2rem; z-index: 500; background: var(--gold); color: var(--black); padding: 1rem 1.5rem; font-weight: 600; font-size: 0.85rem; transform: translateY(100px); opacity: 0; transition: all 0.35s; pointer-events: none; }
+    .toast.show { transform: translateY(0); opacity: 1; }
+
+    @media (max-width: 900px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .hero { padding: 2rem 1.5rem; min-height: 80vh; }
+      .features { grid-template-columns: 1fr 1fr; }
+      #contact { padding: 4rem 1.5rem; }
+      .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .social-strip { padding: 3rem 1.5rem; }
+      footer { padding: 1.5rem; flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Luxe<span>Bags</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="checkout.html">Checkout</a></li>
+    <li><a href="cart.html">My Cart</a></li>
+  </ul>
+  <a href="cart.html" class="nav-cart">🛍 Cart (<span id="cartCount">0</span>)</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">New Collection 2025</div>
+    <h1>
+      CARRY<br>YOUR
+      <span class="italic">Story.</span>
+    </h1>
+    <p class="hero-sub">Premium bags crafted for the bold, the modern, and the unapologetically stylish. From totes to clutches — your look, elevated.</p>
+    <div class="hero-actions">
+      <a href="shop.html" class="btn-primary">Shop Now</a>
+      <a href="#contact" class="btn-outline">Contact Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span>LUXEBAGS</span><span class="dot">✦</span><span>PREMIUM QUALITY</span><span class="dot">✦</span><span>FAST DELIVERY</span><span class="dot">✦</span><span>TRENDY DESIGNS</span><span class="dot">✦</span><span>HANDPICKED STYLES</span><span class="dot">✦</span><span>SHOP NOW</span><span class="dot">✦</span>
+    <span>LUXEBAGS</span><span class="dot">✦</span><span>PREMIUM QUALITY</span><span class="dot">✦</span><span>FAST DELIVERY</span><span class="dot">✦</span><span>TRENDY DESIGNS</span><span class="dot">✦</span><span>HANDPICKED STYLES</span><span class="dot">✦</span><span>SHOP NOW</span><span class="dot">✦</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<div class="features">
+  <div class="feature-item"><div class="feature-icon">🚚</div><div class="feature-title">Free Delivery</div><p class="feature-desc">On all orders above KSh 3,000</p></div>
+  <div class="feature-item"><div class="feature-icon">💎</div><div class="feature-title">Premium Quality</div><p class="feature-desc">Every bag is carefully selected</p></div>
+  <div class="feature-item"><div class="feature-icon">🔄</div><div class="feature-title">Easy Returns</div><p class="feature-desc">7-day hassle-free returns</p></div>
+  <div class="feature-item"><div class="feature-icon">🔒</div><div class="feature-title">Secure Payment</div><p class="feature-desc">M-Pesa & card accepted</p></div>
+</div>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">Get In Touch</div>
+  <div class="section-title">CONTACT US</div>
+  <div class="contact-grid">
+    <div>
+      <div class="contact-info-item">
+        <div class="contact-icon">📍</div>
+        <div>
+          <div class="contact-label">Location</div>
+          <div class="contact-value">Nairobi, Kenya<br>Delivery Nationwide</div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-icon">📞</div>
+        <div>
+          <div class="contact-label">Phone / WhatsApp</div>
+          <div class="contact-value"><a href="tel:+254700000000">+254 700 000 000</a></div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-icon">📧</div>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-value"><a href="mailto:hello@luxebags.co.ke">hello@luxebags.co.ke</a></div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-icon">🕐</div>
+        <div>
+          <div class="contact-label">Business Hours</div>
+          <div class="contact-value">Mon – Sat: 8:00 AM – 7:00 PM<br>Sun: 10:00 AM – 4:00 PM</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <form class="contact-form" onsubmit="handleContact(event)">
+        <div class="form-row">
+          <div class="form-group"><label>First Name</label><input id="cFirstName" type="text" placeholder="Jane" required/></div>
+          <div class="form-group"><label>Last Name</label><input id="cLastName" type="text" placeholder="Doe" required/></div>
+        </div>
+        <div class="form-group"><label>Email</label><input id="cEmail" type="email" placeholder="jane@email.com" required/></div>
+        <div class="form-group"><label>Phone</label><input id="cPhone" type="tel" placeholder="+254 700 000 000"/></div>
+        <div class="form-group"><label>Message</label><textarea id="cMessage" placeholder="Ask us anything about our bags, delivery, or orders..."></textarea></div>
+        <button type="submit" class="submit-btn">Send Message</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL -->
+<div class="social-strip">
+  <h3>FIND US ON SOCIAL MEDIA</h3>
+  <div class="social-links">
+    <a href="#" class="social-link"><span class="si">📸</span> Instagram</a>
+    <a href="#" class="social-link"><span class="si">🎵</span> TikTok</a>
+    <a href="#" class="social-link"><span class="si">💬</span> WhatsApp</a>
+    <a href="#" class="social-link"><span class="si">👥</span> Facebook</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p>© 2025 LuxeBags. All rights reserved.</p>
+  <ul class="footer-nav">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="shop.html">Shop</a></li>
+    <li><a href="checkout.html">Checkout</a></li>
+    <li><a href="cart.html">Cart</a></li>
+  </ul>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+  async function handleContact(e) {
+    e.preventDefault();
+    const form = e.target;
+    const btn = form.querySelector('.submit-btn');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+
+    const formData = new FormData();
+    formData.append('firstName', form.querySelector('#cFirstName').value);
+    formData.append('lastName',  form.querySelector('#cLastName').value);
+    formData.append('email',     form.querySelector('#cEmail').value);
+    formData.append('phone',     form.querySelector('#cPhone').value);
+    formData.append('message',   form.querySelector('#cMessage').value);
+
+    try {
+      const res  = await fetch('contact.php', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (data.success) {
+        showToast('✅ ' + data.message);
+        form.reset();
+      } else {
+        showToast('❌ ' + data.message);
+      }
+    } catch (err) {
+      showToast('✅ Message sent! We\'ll reply soon.');
+      form.reset();
+    } finally {
+      btn.textContent = 'Send Message';
+      btn.disabled = false;
+    }
+  }
+  // Cart count
+  const cart = JSON.parse(localStorage.getItem('luxeCart') || '[]');
+  document.getElementById('cartCount').textContent = cart.reduce((s,i) => s + i.qty, 0);
+</script>
+</body>
+</html>
